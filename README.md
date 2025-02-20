@@ -6,7 +6,7 @@ This is the official repository of the paper "*Learning to Reason from Feedback 
 
 ## 🛠️ Installation
 
-Our implementation is based on `python=3.12`. Follow the commands below to prepare the python environment (we recommand using [Miniconda](https://docs.anaconda.com/miniconda/) to setup the environment):
+Our implementation is based on `python=3.12`. Follow the commands below to prepare the Python environment (we recommend using [Miniconda](https://docs.anaconda.com/miniconda/) to setup the environment):
 
 ```bash
 git clone https://github.com/LaVi-Lab/FTTT.git
@@ -29,9 +29,9 @@ pip install -r requirements.txt
     | HumanEval | [🤗](https://huggingface.co/datasets/openai/openai_humaneval) |
 
     > [!NOTE]
-    > All downloaded datasets should be stored into a folder named `datasets`.
+    > All downloaded datasets should be stored in a folder named `datasets`.
 
-- Another important asset of this repo is the question indices of the test sets, as we only evaluate on hard questions that cannot be solved by the raw LLM initially. You can download these indices from [Google Drive](https://drive.google.com/file/d/1YrPXcXG_-4OTgo7HlujpTfSQU1XU0Gev/view?usp=sharing) and unzip them to the folder `metadata`.
+- Another important asset of this repo is the question indices of the test sets, as we only evaluate hard questions that cannot be solved by the raw LLM initially. You can download these indices from [Google Drive](https://drive.google.com/file/d/1YrPXcXG_-4OTgo7HlujpTfSQU1XU0Gev/view?usp=sharing) and unzip them to the folder `metadata`.
 
     <details>
     <summary>Reproducing question indices</summary>
@@ -47,7 +47,7 @@ pip install -r requirements.txt
 
     </details>
 
-- For the training data of OpTune, it consists of solutions generated from the raw LLM. We provide the [Google Drive](https://drive.google.com/file/d/1wCSInPlNrziS1JF66GpEX-AFRjWo4Tvd/view?usp=sharing) link to download our training data.
+- The training data of OpTune consists of solutions generated from the raw LLM. We provide the [Google Drive](https://drive.google.com/file/d/1wCSInPlNrziS1JF66GpEX-AFRjWo4Tvd/view?usp=sharing) link to download our training data.
 
     <details>
     <summary>Reproducing OpTune training data</summary>
@@ -82,7 +82,7 @@ FTTT
 
 ### 🌐 API
 
-For code generation task, we deploy a local API service to run the generated code and check if it passes all test cases. We use the following commands to launch the service:
+For the code generation task, we deploy a local API service to run the generated code and check if it passes all test cases. We use the following commands to launch the service:
 
 ```bash
 cd api
@@ -93,7 +93,7 @@ By default, this codebase will send requests to `http://localhost:9999` for eval
 
 ## 📊 FTTT Experiments
 
-Belows are commands to reproduce all of our experiments on FTTT and other test-time scaling baselines:
+Below are commands to reproduce all of our experiments on FTTT and other test-time scaling baselines:
 
 ```bash
 # Revision
@@ -158,4 +158,4 @@ To reproduce our OpTune performance, you can download our checkpoints for each d
 
 ## 🤝 Acknowledgement
 
-Some of our implementation is based on [MEND](https://github.com/eric-mitchell/mend). We would like to thanks the authors for sharing their code.
+Some of our implementations are based on [MEND](https://github.com/eric-mitchell/mend). We would like to thank the authors for sharing their code.
