@@ -19,17 +19,17 @@ pip install -r requirements.txt
 
 ### ⏬ Data
 
-- We mainly train and evaluate on MATH500, GSM8K, MBPP and HumanEval. You can download the raw data via the links below or choose to download our packed version on [Google Drive](https://drive.google.com/file/d/1MvaNSC1HsuegfvAvOwqppPr7bntp-3LN/view?usp=sharing):
+- We mainly train and evaluate on [MATH500](https://arxiv.org/abs/2103.03874), [GSM8K](https://arxiv.org/abs/2110.14168), [MBPP](https://arxiv.org/abs/2108.07732) and [HumanEval](https://arxiv.org/abs/2107.03374). You can download the raw data via the links below or choose to download our packed version on [Google Drive](https://drive.google.com/file/d/1MvaNSC1HsuegfvAvOwqppPr7bntp-3LN/view?usp=sharing):
 
     | Dataset | Link |
     | :------ | :--: |
-    | MATH500 | [<img src="https://skillicons.dev/icons?i=github" alt="GitHub Icon" width="20" height="20">](https://github.com/openai/prm800k/tree/main/prm800k/math_splits) |
-    | GSM8K | [<img src="https://skillicons.dev/icons?i=github" alt="GitHub Icon" width="20" height="20">](https://github.com/openai/grade-school-math) |
-    | MBPP | [🤗](https://huggingface.co/datasets/google-research-datasets/mbpp) |
-    | HumanEval | [🤗](https://huggingface.co/datasets/openai/openai_humaneval) |
+    | [MATH500](https://arxiv.org/abs/2103.03874) | [<img src="https://skillicons.dev/icons?i=github" alt="GitHub Icon" width="20" height="20">](https://github.com/openai/prm800k/tree/main/prm800k/math_splits) |
+    | [GSM8K](https://arxiv.org/abs/2110.14168) | [<img src="https://skillicons.dev/icons?i=github" alt="GitHub Icon" width="20" height="20">](https://github.com/openai/grade-school-math) |
+    | [MBPP](https://arxiv.org/abs/2108.07732) | [🤗](https://huggingface.co/datasets/google-research-datasets/mbpp) |
+    | [HumanEval](https://arxiv.org/abs/2107.03374) | [🤗](https://huggingface.co/datasets/openai/openai_humaneval) |
 
-    > [!NOTE]
-    > All downloaded datasets should be stored in a folder named `datasets`.
+> [!NOTE]
+> All downloaded datasets should be stored in a folder named `datasets`.
 
 - Another important asset of this repo is the question indices of the test sets, as we only evaluate hard questions that cannot be solved by the raw LLM initially. You can download these indices from [Google Drive](https://drive.google.com/file/d/1YrPXcXG_-4OTgo7HlujpTfSQU1XU0Gev/view?usp=sharing) and unzip them to the folder `metadata`.
 
@@ -100,8 +100,6 @@ Below are commands to reproduce all of our experiments on FTTT and other test-ti
 bash prelim/scripts/revision.sh [Llama-3.1-8B-Instruct|Mistral-7B-Instruct-v0.3] [MATH500|GSM8K|MBPP|HumanEval]
 # Beam Search
 bash prelim/scripts/beam_search.sh [Llama-3.1-8B-Instruct|Mistral-7B-Instruct-v0.3] [MATH500|GSM8K|MBPP|HumanEval]
-# Beam Search Sampling
-bash prelim/scripts/beam_search_sampling.sh [Llama-3.1-8B-Instruct|Mistral-7B-Instruct-v0.3] [MATH500|GSM8K|MBPP|HumanEval]
 # Best-of-N
 bash prelim/scripts/best_of_n.sh [Llama-3.1-8B-Instruct|Mistral-7B-Instruct-v0.3] [MATH500|GSM8K|MBPP|HumanEval] [42|85|100]
 # Self-Refine
@@ -114,6 +112,9 @@ bash prelim/scripts/fttt.sh [Llama-3.1-8B-Instruct|Mistral-7B-Instruct-v0.3] [MA
 
 > [!NOTE]
 > All output logs will be stored in the folder `outputs` under the current directory.
+
+> [!IMPORTANT]
+> Our codebase uses 🤗HuggingFace `transformers` to download & load pretrained models, including [Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) and [Mistral-7B-Instruct-v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3). If you want to load the models from a local directory, please update the model name in our scripts to your local directory, e.g., `meta-llama/Llama-3.1-8B-Instruct` => `/YOUR/PATH/MODEL_DIRECTORY`.
 
 ## 🎯 OpTune Experiments
 
@@ -131,6 +132,12 @@ bash optim/scripts/train.sh [MATH500|GSM8K|MBPP] 42 [Llama-3.1-8B-Instruct|Mistr
 > [!NOTE]
 > All checkpoints will be stored in the folder `outputs` under the current directory.
 
+> [!TIP]
+> OpTune currently does not support model architectures other than Llama and Mistral, as it relies on the modification over the original 🤗HuggingFace implementation to inject weight updates at test time. If you want to support other model architectures, please add an implementation to `optim/models` and modify `run.py` and `evaluator.py` to use the correct architecture.
+
+> [!WARNING]  
+> Although our implementation of OpTune supports distributed data parallelism for multiple GPU training, this feature is not well tested and we suggest training in a single GPU.
+
 ### ⚖️ Testing
 
 After training the models, you can use the following commands to evaluate the trained PEFT baselines and OpTune:
@@ -146,15 +153,11 @@ Typically, we use the checkpoints in the last epoch for evaluation.
 
 To reproduce our OpTune performance, you can download our checkpoints for each dataset and run the evaluation:
 
-<center>
-
 | Dataset | Llama-3.1-8B-Instruct | Mistral-7B-Instruct-v0.3 |
 | :------ | :--: | :--: |
 | MATH500 | [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Google_Drive_icon_%282020%29.svg/512px-Google_Drive_icon_%282020%29.svg.png" alt="Google Drive Icon" width="20" height="20">](https://drive.google.com/file/d/1M5AniWkXtD17PvrPls3Q3Ma6WUfKFQtn/view?usp=sharing) | [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Google_Drive_icon_%282020%29.svg/512px-Google_Drive_icon_%282020%29.svg.png" alt="Google Drive Icon" width="20" height="20">](https://drive.google.com/file/d/1DtFijlLIash6Z1aBN1yy3McPgD5SjF76/view?usp=sharing) |
 | GSM8K | [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Google_Drive_icon_%282020%29.svg/512px-Google_Drive_icon_%282020%29.svg.png" alt="Google Drive Icon" width="20" height="20">](https://drive.google.com/file/d/1RCmD00_9_BDPIexL2W9FcZwSu-HxQhmp/view?usp=sharing) | [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Google_Drive_icon_%282020%29.svg/512px-Google_Drive_icon_%282020%29.svg.png" alt="Google Drive Icon" width="20" height="20">](https://drive.google.com/file/d/1dD7TsMTf7DYWp0GzHgYZpYkWey80-UGU/view?usp=sharing) |
 | MBPP | [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Google_Drive_icon_%282020%29.svg/512px-Google_Drive_icon_%282020%29.svg.png" alt="Google Drive Icon" width="20" height="20">](https://drive.google.com/file/d/15oomWNg3sEoTDKl0FBaZBjCva7Jookkz/view?usp=sharing) | [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Google_Drive_icon_%282020%29.svg/512px-Google_Drive_icon_%282020%29.svg.png" alt="Google Drive Icon" width="20" height="20">](https://drive.google.com/file/d/12Furc43EewaOPlJBssgRb7SGeGX11fVB/view?usp=sharing) |
-
-</center>
 
 ## 🤝 Acknowledgement
 

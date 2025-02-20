@@ -13,6 +13,7 @@ from tqdm import tqdm
 from helpers import score_completions
 from data import get_dataset_cls
 from models.modeling_llama import LlamaForCausalLM
+from models.modeling_mistral import MistralForCausalLM
 from editable_model import EditableModel
 
 
@@ -30,12 +31,20 @@ def evaluate_worker(i: int, input_queue: queue.Queue, output_queue: queue.Queue,
         tokenizer.pad_token = tokenizer.eos_token
         tokenizer.pad_token_id = tokenizer.eos_token_id
 
-
-    model = LlamaForCausalLM.from_pretrained(
-        config.model_name_or_path,
-        attn_implementation="sdpa",
-        torch_dtype=torch.bfloat16 if config.fp16 else None,
-    )
+    if "llama" in config.model_name_or_path.lower():
+        model = LlamaForCausalLM.from_pretrained(
+            config.model_name_or_path,
+            attn_implementation="sdpa",
+            torch_dtype=torch.bfloat16 if config.fp16 else None,
+        )
+    elif "mistral" in config.model_name_or_path.lower():
+        model = MistralForCausalLM.from_pretrained(
+            config.model_name_or_path,
+            attn_implementation="sdpa",
+            torch_dtype=torch.bfloat16 if config.fp16 else None,
+        )
+    else:
+        raise ValueError(f"Unknown architecture for {config.model_name_or_path}")
 
     state_dict = torch.load(os.path.join(config.output_dir, "model.ckpt"))
     model = EditableModel(model, config)
