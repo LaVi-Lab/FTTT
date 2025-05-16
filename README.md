@@ -9,7 +9,8 @@ This is the official repository of the paper "*Learning to Reason from Feedback 
 
 ## 🔔 Updates
 
-- **[2025-02-25]** 🔥 We release the code of our paper. The detailed instruction can be found below.
+- **[2025-05-16]** 🔥 Our paper has been accepted by ACL 2025.
+- **[2025-02-25]** We release the code of our paper. The detailed instructions can be found below.
 
 ## 🛠️ Installation
 
